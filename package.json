@@ -1,0 +1,32 @@
+{
+  "name": "dnd-initiative",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "DATABASE_URL=postgresql://localhost/dnd_initiative_db nodemon server.js",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hgranthorner/dnd-initiative.git"
+  },
+  "keywords": [],
+  "author": "Grant Horner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hgranthorner/dnd-initiative/issues"
+  },
+  "homepage": "https://github.com/hgranthorner/dnd-initiative#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "express": "^4.16.4",
+    "pg": "^7.8.1",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
+    "sequelize": "^4.43.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  }
+}
