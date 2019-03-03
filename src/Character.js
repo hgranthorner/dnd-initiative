@@ -8,6 +8,9 @@ export default props => {
   return (
     <tr>
       <td>
+        <button onClick={() => finishTurn(id)} className="btn btn-primary">
+          Done
+        </button>
         {player_name === 'DM' ? (
           <button className="btn btn-danger" onClick={() => removeCharacter(id)}>
             Remove
@@ -15,9 +18,6 @@ export default props => {
         ) : (
           ''
         )}
-        <button onClick={() => finishTurn(id)} className="btn btn-primary">
-          Done
-        </button>
       </td>
       <td>{name}</td>
       <td>{AC}</td>
