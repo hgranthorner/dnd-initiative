@@ -60,7 +60,7 @@ class App extends React.Component {
     console.log(characters)
     return (
       <div>
-        <h1>Here is the app!</h1>
+        <h1>DnD Initiative Tracker</h1>
         <button onClick={() => this.toggleCombat()} className="btn btn-primary">
           {combatStarted ? 'End Combat' : 'Begin Combat'}
         </button>
