@@ -14,6 +14,8 @@ class App extends React.Component {
     this.selectCharacter = this.selectCharacter.bind(this)
     this.toggleCombat = this.toggleCombat.bind(this)
     this.finishTurn = this.finishTurn.bind(this)
+    this.addCharacter = this.addCharacter.bind(this)
+    this.removeCharacter = this.removeCharacter.bind(this)
   }
 
   toggleCombat() {
@@ -41,6 +43,33 @@ class App extends React.Component {
   selectCharacter(id) {
     console.log(id)
     this.setState({ selectedCharId: id })
+  }
+
+  addCharacter() {
+    const name = document.querySelector('#name-input')
+    const ac = document.querySelector('#ac-input')
+    const dex = document.querySelector('#dex-input')
+    const hp = document.querySelector('#hp-input')
+    axios
+      .post('/api/characters', {
+        name: name.value,
+        AC: ac.value,
+        dex_modifier: dex.value,
+        max_HP: hp.value
+      })
+      .then(() => axios.get('/api/characters'))
+      .then(response => response.data)
+      .then(characters => this.setState({ characters }))
+      .catch(e => console.error(e))
+  }
+
+  removeCharacter(id) {
+    axios
+      .delete(`/api/characters/${id}`)
+      .then(() => axios.get('/api/characters'))
+      .then(response => response.data)
+      .then(characters => this.setState({ characters }))
+      .catch(e => console.error(e))
   }
 
   finishTurn(id) {
@@ -78,8 +107,27 @@ class App extends React.Component {
           </thead>
           <tbody>
             {characters.map(character => (
-              <Character key={character.id} character={character} finishTurn={this.finishTurn} />
+              <Character key={character.id} character={character} finishTurn={this.finishTurn} removeCharacter={this.removeCharacter} />
             ))}
+            <tr id="input-row">
+              <td>
+                <button className="btn btn-primary" onClick={() => this.addCharacter()}>
+                  Add
+                </button>
+              </td>
+              <td>
+                <input name="name" defaultValue="Name" id="name-input" />
+              </td>
+              <td>
+                <input name="AC" defaultValue="0" id="ac-input" />
+              </td>
+              <td>
+                <input name="dex_modifier" defaultValue="0" id="dex-input" />
+              </td>
+              <td>
+                <input name="max_HP" defaultValue="0" id="hp-input" />
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

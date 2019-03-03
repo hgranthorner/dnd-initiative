@@ -4,9 +4,17 @@ import React from 'react'
 export default props => {
   const { id, name, AC, dex_modifier, max_HP, player_name, initiative } = props.character
   const finishTurn = props.finishTurn
+  const removeCharacter = props.removeCharacter
   return (
     <tr>
       <td>
+        {player_name === 'DM' ? (
+          <button className="btn btn-danger" onClick={() => removeCharacter(id)}>
+            Remove
+          </button>
+        ) : (
+          ''
+        )}
         <button onClick={() => finishTurn(id)} className="btn btn-primary">
           Done
         </button>
