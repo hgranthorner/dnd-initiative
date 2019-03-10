@@ -1,122 +1,131 @@
-import React from 'react'
+import React, { useState, useEffect, useLayoutEffect } from 'react'
 import axios from 'axios'
 import Character from './Character'
 
-class App extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      characters: [],
-      selectedCharId: -1,
-      combatStarted: false
-    }
+const App = () => {
+  const [characters, setCharacters] = useState([])
+  const [selectedCharacterId, setSelectedCharacterId] = useState(-1)
+  const [combat, setCombat] = useState(false)
+  const [isDM, setDM] = useState(false)
 
-    this.selectCharacter = this.selectCharacter.bind(this)
-    this.toggleCombat = this.toggleCombat.bind(this)
-    this.finishTurn = this.finishTurn.bind(this)
-    this.addCharacter = this.addCharacter.bind(this)
-    this.removeCharacter = this.removeCharacter.bind(this)
-  }
+  const sortCharacters = characters => characters.sort((a, b) => (a.initiative < b.initiative ? 1 : -1))
 
-  toggleCombat() {
-    this.setState(prevState => {
-      prevState.characters.forEach(character => {
-        character.initiative = !prevState.combatStarted ? Math.floor(Math.random() * 20) + character.dex_modifier : 0
-      })
-      return {
-        combatStarted: !prevState.combatStarted,
-        characters: prevState.characters.sort((a, b) => {
-          return a.initiative < b.initiative ? 1 : -1
+  const beginCombat = () => {
+    setCharacters(
+      sortCharacters(
+        characters.map(character => {
+          character.initiative = Math.ceil(Math.random() * 20)
+          return character
         })
-      }
-    })
+      )
+    )
   }
 
-  componentDidMount() {
+  const endCombat = () => {
+    setCharacters(
+      characters.map(character => {
+        character.initiative = 0
+        return character
+      })
+    )
+  }
+
+  const toggleCombat = () => {
+    if (combat) {
+      setCombat(false)
+      endCombat()
+    } else {
+      setCombat(true)
+      beginCombat()
+    }
+  }
+
+  useLayoutEffect(() => {
     axios
       .get('/api/characters')
       .then(response => response.data)
-      .then(characters => this.setState({ characters }))
+      .then(characters => setCharacters(characters))
       .catch(e => console.error(`Failed to obtain characters from db.\n${3}`))
-  }
+  }, [])
 
-  selectCharacter(id) {
+  const selectCharacter = id => {
     console.log(id)
-    this.setState({ selectedCharId: id })
+    setSelectedCharacterId(id)
   }
 
-  addCharacter() {
+  const addCharacter = () => {
     const name = document.querySelector('#name-input')
     const ac = document.querySelector('#ac-input')
     const dex = document.querySelector('#dex-input')
     const hp = document.querySelector('#hp-input')
+    const values = {
+      name: name.value,
+      AC: ac.value,
+      dex_modifier: dex.value,
+      max_HP: hp.value
+    }
     axios
-      .post('/api/characters', {
-        name: name.value,
-        AC: ac.value,
-        dex_modifier: dex.value,
-        max_HP: hp.value
-      })
-      .then(() => axios.get('/api/characters'))
+      .post('/api/characters', values)
       .then(response => response.data)
-      .then(characters => this.setState({ characters }))
+      .then(character => {
+        const newChars = Array.from(characters)
+        if (combat) character.initiative = Math.ceil(Math.random() * 20)
+        newChars.push(character)
+        if (combat) setCharacters(sortCharacters(newChars))
+        else setCharacters(newChars)
+      })
       .catch(e => console.error(e))
   }
 
-  removeCharacter(id) {
+  const removeCharacter = id => {
     axios
       .delete(`/api/characters/${id}`)
-      .then(() => axios.get('/api/characters'))
-      .then(response => response.data)
-      .then(characters => this.setState({ characters }))
+      .then(() => setCharacters(characters.filter(c => c.id !== id)))
       .catch(e => console.error(e))
   }
 
-  finishTurn(id) {
+  const finishTurn = id => {
     console.log('finish turn')
-    this.setState(prevState => {
-      const char = prevState.characters.find(c => c.id === id)
-      const newCharacters = prevState.characters.filter(c => c.id !== id)
-      newCharacters.push(char)
-      return {
-        characters: newCharacters
-      }
-    })
+    const char = characters.find(c => c.id === id)
+    const newCharacters = characters.filter(c => c.id !== id)
+    newCharacters.push(char)
+    setCharacters(newCharacters)
   }
 
-  render() {
-    const { characters, combatStarted, selectedCharId } = this.state
-    console.log(characters)
-    return (
-      <div>
-        <h1>DnD Initiative Tracker</h1>
-        <button onClick={() => this.toggleCombat()} className="btn btn-primary">
-          {combatStarted ? 'End Combat' : 'Begin Combat'}
-        </button>
-        <table className="table">
-          <thead>
-            <tr>
-              <td />
-              <td>Character Name</td>
-              <td>AC</td>
-              <td>DEX Modifier</td>
-              <td>Max HP</td>
-              <td>Player Name</td>
-              <td>Initiative</td>
-            </tr>
-          </thead>
-          <tbody>
-            {characters.map(character => (
-              <Character key={character.id} character={character} finishTurn={this.finishTurn} removeCharacter={this.removeCharacter} />
-            ))}
+  return (
+    <div>
+      <h1>DnD Initiative Tracker</h1>
+      <button onClick={() => toggleCombat()} className="btn btn-primary">
+        {combat ? 'End Combat' : 'Begin Combat'}
+      </button>
+      <button type="button" className={isDM ? 'btn btn-primary' : 'btn btn-secondary'} onClick={() => setDM(!isDM)}>
+        DM View
+      </button>
+      <table className="table">
+        <thead>
+          <tr>
+            <td />
+            <td>Character Name</td>
+            <td>AC</td>
+            <td>DEX Modifier</td>
+            <td>Max HP</td>
+            <td>Player Name</td>
+            <td>Initiative</td>
+          </tr>
+        </thead>
+        <tbody>
+          {characters.map(character => (
+            <Character key={character.id} character={character} finishTurn={finishTurn} removeCharacter={removeCharacter} isDM={isDM} />
+          ))}
+          {isDM ? (
             <tr id="input-row">
               <td>
-                <button className="btn btn-primary" onClick={() => this.addCharacter()}>
+                <button className="btn btn-primary" onClick={() => addCharacter()} type="button">
                   Add
                 </button>
               </td>
               <td>
-                <input name="name" defaultValue="Name" id="name-input" />
+                <input name="name" defaultValue="Name..." id="name-input" />
               </td>
               <td>
                 <input name="AC" defaultValue="0" id="ac-input" />
@@ -128,11 +137,13 @@ class App extends React.Component {
                 <input name="max_HP" defaultValue="0" id="hp-input" />
               </td>
             </tr>
-          </tbody>
-        </table>
-      </div>
-    )
-  }
+          ) : (
+            ''
+          )}
+        </tbody>
+      </table>
+    </div>
+  )
 }
 
 export default App
