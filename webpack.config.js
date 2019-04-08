@@ -2,9 +2,9 @@ const path = require('path')
 
 module.exports = {
   devtool: 'eval',
-  entry: './src',
+  entry: path.resolve(__dirname, 'client', 'src'),
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'client', 'dist'),
     filename: 'bundle.js'
   },
   module: {
@@ -14,7 +14,7 @@ module.exports = {
         loader: 'babel-loader',
         exclude: /node_modules/,
         options: {
-          presets: ['es2015', 'react']
+          presets: ['@babel/preset-env', '@babel/preset-react']
         }
       }
     ]
