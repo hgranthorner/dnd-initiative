@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
 import { HashRouter as Router, Route, Redirect } from "react-router-dom"
-import { SelectRoom, SelectCharacter } from './components'
+import { SelectRoom, SelectCharacter, Tracker } from './components'
 
-const mapStateToProps = ({ roomId, characterId }) => {
-  return { roomId, characterId }
-}
+const mapStateToProps = (state) => ({})
 
-const App = ({ roomId, characterId }) => {
-
+const App = () => {
   return (
     <Router>
       <Route path={'/'} exact
              render={() => (
                <Redirect to={'/rooms'} />
              )} />
-      <Route path={'/characters'} exact component={SelectCharacter} />
       <Route path={'/rooms'} exact component={SelectRoom} />
+      <Route path={'/rooms/:id'} exact render={({ match }) => <SelectCharacter roomId={match.params.id}/>} />
+      <Route path={'/rooms/:id/tracker'} exact render={({match}) => <Tracker roomId={match.params.id}/> }/>
     </Router>
   )
 }

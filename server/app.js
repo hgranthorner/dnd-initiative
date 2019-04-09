@@ -6,10 +6,12 @@ const path = require('path')
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')))
 app.use(express.json())
 
-app.get('/api/rooms/:id/characters', (req, res, next) => {
+app.get('/api/rooms/:id', (req, res, next) => {
   const roomId = Number(req.params.id)
   Character.findAll( { where: { roomId }})
-    .then(characters => res.send(characters))
+    .then(characters => {
+      res.send(characters)
+    })
     .catch(next)
 })
 

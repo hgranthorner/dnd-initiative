@@ -26,7 +26,7 @@ const SelectRoom = ({ rooms, getRooms, chooseRoom, addRoom }) => {
       <ul className="list-group" style={{marginBottom: '10px'}}>
         {
           rooms.map(room => (
-              <Link to={'/characters'}
+              <Link to={`/rooms/${room.id}`}
                     key={room.id}
                     onClick={() => chooseRoom(room.id)}>
                 <li className="list-group-item" style={{cursor: 'pointer'}}>

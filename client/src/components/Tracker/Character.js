@@ -1,11 +1,10 @@
-/* eslint-disable react/display-name */
 import React from 'react'
 
-export default props => {
-  const { id, name, AC, dex_modifier, max_HP, player_name, initiative } = props.character
-  const isDM = props.isDM
-  const finishTurn = props.finishTurn
-  const removeCharacter = props.removeCharacter
+
+
+const Character = ({ character, isDM, finishTurn }) => {
+  const { id, name, AC, dex_modifier, max_HP, player_name, initiative } = character
+  // const removeCharacter = props.removeCharacter
 
   return (
     <tr>
@@ -16,13 +15,13 @@ export default props => {
               <button onClick={() => finishTurn(id)} className="btn-sm btn-success" type="button">
                 &#10003;
               </button>
-              {player_name === 'DM' ? (
-                <button aria-label="Close" className="close" onClick={() => removeCharacter(id)} type="button">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              ) : (
-                ''
-              )}
+              {/*{player_name === 'DM' ? (*/}
+              {/*  /!*<button aria-label="Close" className="close" onClick={() => removeCharacter(id)} type="button">*!/*/}
+              {/*  /!*  <span aria-hidden="true">&times;</span>*!/*/}
+              {/*  // </button>*/}
+              {/*) : (*/}
+              {/*  ''*/}
+              {/*)}*/}
             </div>
           </div>
         ) : (
@@ -38,3 +37,5 @@ export default props => {
     </tr>
   )
 }
+
+export default Character

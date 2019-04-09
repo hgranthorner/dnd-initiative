@@ -5,9 +5,10 @@ import axios from 'axios'
 const initialState = {
   roomId: 0,
   rooms: [],
-  isDM: 0,
+  isDM: false,
   characterId: 0,
-  characters: []
+  characters: [],
+  inCombat: false
 }
 
 // action types
@@ -19,6 +20,8 @@ const GET_CHARACTERS = Symbol('redux get characters')
 const ADD_CHARACTER = Symbol('redux add character')
 const CHOOSE_CHARACTER = Symbol('redux choose character')
 const DELETE_CHARACTER = Symbol('redux delete character')
+const TOGGLE_COMBAT = Symbol('redux toggle combat')
+const TOGGLE_DM = Symbol('redux toggle DM')
 
 // action creators
 
@@ -30,6 +33,8 @@ const getCharactersActionCreator = (characters) => ({ type: GET_CHARACTERS, char
 const addCharacterActionCreator = (character) => ({ type: ADD_CHARACTER, character })
 const chooseCharacterActionCreator = (characterId) => ({ type: CHOOSE_CHARACTER, characterId })
 const deleteCharacterActionCreator = (characterId) => ({ type: DELETE_CHARACTER, characterId })
+const toggleCombatActionCreator = () => ({ type: TOGGLE_COMBAT })
+const toggleDMActionCreator = () => ({ type: TOGGLE_DM })
 
 // reducer
 
@@ -56,6 +61,10 @@ const reducer = (state = initialState, { type, rooms, room, roomId, character, c
       const oldCharacters = [...state.characters]
       const newCharacters = oldCharacters.filter(c => Number(c.id) !== Number(characterId))
       return { ...state, characters: newCharacters }
+    case TOGGLE_COMBAT:
+      return { ...state, inCombat: !state.inCombat }
+    case TOGGLE_DM:
+      return { ...state, isDM: !state.isDM }
     default:
       return state
   }
@@ -96,9 +105,9 @@ const deleteRoom = (roomId) => {
   }
 }
 
-const getCharacters = () => {
+const getCharacters = (roomId) => {
   return dispatch => {
-    return axios.get(`/api/rooms/${store.getState().roomId}/characters`)
+    return axios.get(`/api/rooms/${roomId}`)
       .then(res => res.data)
       .then(characters =>
         dispatch(getCharactersActionCreator(characters))
@@ -126,6 +135,7 @@ const deleteCharacter = (characterId) => {
 }
 
 export { store, getRooms, getCharacters,
+  getCharactersActionCreator, toggleDMActionCreator,
   addRoom, addCharacter, deleteRoom,
   deleteCharacter, chooseRoomActionCreator,
-  chooseCharacterActionCreator }
+  chooseCharacterActionCreator, toggleCombatActionCreator }
