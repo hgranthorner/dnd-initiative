@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import {connect} from 'react-redux'
-import { getCharacters, getCharactersActionCreator } from "../../store"
+import { getCharacters, getCharactersActionCreator } from "../../../store/store"
 import TrackerInput from './TrackerInput'
 import TrackerHeader from './TrackerHeader'
 import Character from './Character'

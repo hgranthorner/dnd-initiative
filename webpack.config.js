@@ -7,15 +7,15 @@ module.exports = {
     path: path.resolve(__dirname, 'client', 'dist'),
     filename: 'bundle.js'
   },
+  resolve: {
+    extensions: ['.js', '.json', '.ts', '.tsx']
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
-        loader: 'babel-loader',
+        test: /\.(t|j)sx?$/,
+        loader: 'ts-loader',
         exclude: /node_modules/,
-        options: {
-          presets: ['@babel/preset-env', '@babel/preset-react']
-        }
       }
     ]
   }

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import {connect} from 'react-redux'
-import { getRooms, chooseRoomActionCreator, addRoom } from '../../store'
+import { getRooms, chooseRoomActionCreator, addRoom } from '../../../store/store'
 import { Link } from 'react-router-dom'
 
 const mapStateToProps = ({ rooms }) => {
