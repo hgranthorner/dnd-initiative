@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import { toggleCombatActionCreator, getCharactersActionCreator } from '../../store'
+import { toggleCombatActionCreator, getCharactersActionCreator } from '../../../store/store'
 
 const mapStateToProps = ({ isDM, inCombat }) => {
   return { isDM, inCombat }

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import {connect} from 'react-redux'
-import { getCharacters, chooseCharacterActionCreator, toggleDMActionCreator } from '../../store'
+import { getCharacters, chooseCharacterActionCreator, toggleDMActionCreator } from '../../../store/store'
 import { Link } from 'react-router-dom'
 
 const mapStateToProps = ({ characters }) => {

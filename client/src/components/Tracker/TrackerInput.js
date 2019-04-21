@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {connect} from 'react-redux'
-import { addCharacter } from '../../store'
+import { addCharacter } from '../../../store/store'
 
 const mapStateToProps = (state) => {
   return { state }
